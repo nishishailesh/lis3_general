@@ -83,40 +83,40 @@ while True:
   while s!=None:
     try:
       s.connect((HOST, PORT))
-      print_to_log("1.connected:","ok....")
+      print_to_log("connected:","ok....")
     except Exception as my_ex:
-      print_to_log('2.can not connect to RP500:',my_ex)
+      print_to_log('can not connect to RP500:',my_ex)
       time.sleep(1)
-      break
+      continue
     while True:
+      signal.alarm(0)
+      signal.alarm(10)
       try:
-        signal.alarm(0)
-        signal.alarm(10)
         data = s.recv(3024)
-        print_to_log('3.RECV:<<<', data)
+        print_to_log('RECV:<<<', data)
         all_list=analyse_data(data)
       except Exception as my_ex:
-        print_to_log("4.ERROR:>>>>>",my_ex)
-        break;
+        print_to_log("ERROR:>>>>>",my_ex)
+        break; 
       try:
         signal.alarm(0)
         signal.alarm(10)
         s.sendall(ack_msg)
       except Exception as my_ex:
-        print_to_log("5.ERROR:>>>>>",my_ex)
+        print_to_log("ERROR:>>>>>",my_ex)
         break
       data_type=find_data_type(all_list)
       if(data_type==b'SMP_NEW_AV'):
         rSEQ=find_rSEQ(all_list)
-        print_to_log("6.rSEQ AVAILABLE==========>",find_rSEQ(all_list))
-        pre_smp_req= STX+b'SMP_REQ' +FS+RS+b'aMOD'+GS+lis3_conf.model_string+GS+GS+GS+FS+b'iIID'+GS+lis3_conf.serial_string+GS+GS+GS+FS+b'rSEQ'+GS+rSEQ+GS+GS+GS+FS+RS+ETX
+        print_to_log("rSEQ AVAILABLE==========>",find_rSEQ(all_list))
+        pre_smp_req= STX+b'SMP_REQ' +FS+RS+b'aMOD'+GS+b'0500'+GS+GS+GS+FS+b'iIID'+GS+b'45064'+GS+GS+GS+FS+b'rSEQ'+GS+rSEQ+GS+GS+GS+FS+RS+ETX
         smp_req=pre_smp_req+get_checksum(pre_smp_req)+EOT
         try:
           signal.alarm(0)
           signal.alarm(10)
           s.sendall(smp_req)
         except Exception as my_ex:
-          print_to_log("7.ERROR:>>>>>",my_ex)
+          print_to_log("ERROR:>>>>>",my_ex)
           break
       if(data_type==b'SMP_NEW_DATA'):
         filec=file_mgmt()
@@ -129,4 +129,5 @@ while True:
         #Now use this fd for stx-etb/etx frame writing
         fd.write(data)
         fd.close()
-        print_to_log('8.File Content written:',data)
+        print_to_log('File Content written:',data)
+      signal.alarm(0)

@@ -15,3 +15,6 @@ inbox_arch='/root/rp500.inbox.arch/'
 outbox_data='/root/rp500.outbox.data/'
 outbox_arch='/root/rp500.outbox.arch/'
 equipment='RP500'
+model_string=b'0500'
+serial_string=b'45064'
+
