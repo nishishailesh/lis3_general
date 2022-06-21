@@ -145,6 +145,9 @@ while True:
       print_to_log("File type>>>>","SMP_NEW_DATA")
       iPID=find_iPID(all_list)
       print_to_log("Sample_ID>>>>",iPID)
+      if(iPID.decode('UTF-8').isnumeric() == False):
+        logging.debug('sample_id is not number')
+        continue;
 
       datee=find_result(all_list,b'rDATE')
       print_to_log("Date>>>>",datee)
